@@ -36,7 +36,7 @@ pipeline{
     }
     stage ('Build and Push Docker Image') {
         environment {
-            DOCKER_IMAGE = "anujatsamuel/complete-cicd:${BUILD_NUMBER}"
+            DOCKER_IMAGE = "anujatsamuel/devops:${BUILD_NUMBER}"
          // DOCKERFILE_LOCATION = "Java-App/Dockerfile"
             REGISTRY_CREDENTIALS = credentials('docker-cred')
         }
