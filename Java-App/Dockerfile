@@ -1,5 +1,5 @@
 FROM adoptopenjdk/openjdk11:alpine-jre
-ARG artifact=target/java-web.jar
+ARG artifact=target/java-app-web.jar
 WORKDIR /opt/app 
 COPY ${artifact} app.jar
 ENTRYPOINT [ "java","-jar","app.jar" ]
