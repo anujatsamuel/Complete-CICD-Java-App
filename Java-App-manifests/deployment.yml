@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: java-app
-        image: abhishekf5/ultimate-cicd:replaceImageTag
+        image: anujatsamuel/devops:replaceImageTag
         resources:
           limits:
             memory: "128Mi"
