@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: java-app
-        image: anujatsamuel/devops:replaceImageTag
+        image: anujatsamuel/devops:3
         resources:
           limits:
             memory: "128Mi"
