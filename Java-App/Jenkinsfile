@@ -18,7 +18,7 @@ pipeline{
         steps {
             sh 'ls -ltr'
             // build the project and create a JAR file
-            sh 'cd Complete-CICD-Java-App/Java-App && mvn clean package'
+            sh 'cd Java-App && mvn clean package'
         }
 
     }
@@ -28,7 +28,7 @@ pipeline{
         }
         steps {
             withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-            sh 'cd Complete-CICD-Java-App/Java-App && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
+            sh 'cd Java-App && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
             }
 
         }
@@ -37,12 +37,12 @@ pipeline{
     stage ('Build and Push Docker Image') {
         environment {
             DOCKER_IMAGE = "anujatsamuel/complete-cicd:${BUILD_NUMBER}"
-         // DOCKERFILE_LOCATION = "Complete-CICD-Java-App/Java-App/Dockerfile"
+         // DOCKERFILE_LOCATION = "Java-App/Dockerfile"
             REGISTRY_CREDENTIALS = credentials('docker-cred')
         }
         steps {
             script {
-                sh 'cd Complete-CICD-Java-App/Java-App && docker build -t ${DOCKER_IMAGE} .'
+                sh 'cd Java-App && docker build -t ${DOCKER_IMAGE} .'
                 def dockerImage = docker.image("${DOCKER_IMAGE}")
                 docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
                 dockerImage.push()
@@ -53,7 +53,7 @@ pipeline{
     }
     stage ('Update Deployment file') {
         environment {
-            GIT_REPO_NAME = "Complete-CICD_JavaApp"
+            GIT_REPO_NAME = "Complete-CICD-Java-App"
             GIT_USER_NAME = "anujatsamuel"
         }
         steps {
@@ -62,8 +62,8 @@ pipeline{
                     git config user.email "anujatsamuel@gmail.com"
                     git config user.name "Anuja"
                     BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" jComplete-CICD-Java-App/Java-App-manifests/deployment.yml
-                    git add Complete-CICD-Java-App/Java-App-manifests/deployment.yml
+                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Java-App-manifests/deployment.yml
+                    git add Java-App-manifests/deployment.yml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
                 '''
